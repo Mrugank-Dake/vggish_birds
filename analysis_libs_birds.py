@@ -66,7 +66,7 @@ def multi_class_classification(X, y, k_fold = 5):
         mofa_train += 1
       elif i == 'FINI':
         fini_train += 1
-      elif i == _'CUCE':
+      elif i == 'CUCE':
         cuce_train += 1
       elif i == 'PHMA':
         phma_train += 1
