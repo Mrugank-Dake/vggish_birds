@@ -1,4 +1,4 @@
-from analysis_libs_birds import multi_class_classification
+from analysis_libs_birds_with_noise import multi_class_classification
 from plot_libs_birds import plot_multi_class_recalls
 import matplotlib.pyplot as plt
 import matplotlib
@@ -16,7 +16,7 @@ matplotlib.rcParams.update({'font.size': 24})
 feats = ['raw_audioset_feats_960ms']
 
 # How many training test splits - recommend 5
-k_folds = 5
+k_folds = 10
 
 # Figure setup
 n_subplots_x = 1
@@ -29,7 +29,7 @@ ax = plt.gca()
 Project_path = input('Project path: ')
 for f in feats:
         # Load data from pickle files
-        path_here = os.path.join(Project_path, 'Data/birds_with_noise.pickle')
+        path_here = os.path.join(Project_path, 'Data/birds_with_noise_100.pickle')
         with open(path_here, 'rb') as savef:
                 birds = pickle.load(savef)
         birds = np.transpose(np.array(birds))
@@ -47,5 +47,5 @@ for f in feats:
 
 png_name = 'Classification birds with all noise.png'
 save_path = os.path.join(Project_path, 'Figures', png_name)   
-fig.savefig(save_path)
+#fig.savefig(save_path)
 plt.show()
