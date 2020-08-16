@@ -45,7 +45,7 @@ for f in feats:
         ax.set_xlabel("Bird species")
         ax.set_ylabel("F1 score")
 
-png_name = 'Classification birds with all noise.png'
+png_name = 'Classification birds with all noise no PHMA no PYJO.png'
 save_path = os.path.join(Project_path, 'Figures', png_name)   
-#fig.savefig(save_path)
+fig.savefig(save_path)
 plt.show()
