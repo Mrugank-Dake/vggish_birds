@@ -12,7 +12,7 @@ import pickle
 Project_path = input('Project path: ')
 Folder_name = input('02 or 04: ')
 audio_dir = Project_path + 'ARU_Test/' + Folder_name +'/'
-spec_dir = os.path.join(Project_path, 'ARU_embeddings_no_overlap', Folder_name)
+spec_dir = os.path.join(Project_path, 'ARU_embeddings_50_overlap', Folder_name)
 if not os.path.exists(spec_dir):
   os.mkdir(spec_dir)
 all_fs = os.listdir(audio_dir)
