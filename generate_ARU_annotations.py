@@ -38,9 +38,10 @@ for day in days:
     species_prediction = []
     species_prediction.append(clf.predict(audio_feats_data))
     print(audio_feats_data.shape)
-    print(species.prediction.shape)
+    species_prediction = np.transpose(np.asarray(species_prediction))
+    print(species_prediction.shape)
     save_path = os.path.join(save_folder, day_label, time_stamp, '.txt')
-    #make_annotation_file(save_path, day_label, audio_feats_data, time_stamp, species_prediction)
+    make_annotation_file(save_path, day_label, time_stamp, species_prediction)
 #save_folder = Project_path + '/Data/'    
 #save_file_name = save_folder + 'birds_with_noise_100.pickle'
 #with open(save_file_name, 'wb') as opo:
