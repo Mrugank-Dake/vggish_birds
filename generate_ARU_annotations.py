@@ -3,10 +3,12 @@ import numpy as np
 import os
 import random
 from sklearn.ensemble import RandomForestClassifier
+from save_text import make_annotation_file
 
 days = ['test']
 concatenated_pickle = []
 Project_path = input('Project path: ')
+save_folder = Project_path + '/ARU_annotations/'
 
 # Load training data from pickle files
 path_here = os.path.join(Project_path, 'Data/birds_with_noise_100.pickle')
@@ -24,7 +26,6 @@ print(BIRDS.shape)
 clf = RandomForestClassifier(random_state=0, n_estimators=100)
 clf.fit(BIRDS, species)
 
-
 for day in days:
   folder_name = Project_path + 'ARU_embeddings_no_overlap/' + day + '/'
   file_names = os.listdir(folder_name)
@@ -36,7 +37,10 @@ for day in days:
     day_label, audio_feats_data, time_stamp = wtf['day'], wtf['raw_audioset_feats_960ms'], wtf['time_stamp']
     species_prediction = []
     species_prediction.append(clf.predict(audio_feats_data))
-    print(species_prediction)
+    print(audio_feats_data.shape)
+    print(species.prediction.shape)
+    save_path = os.path.join(save_folder, day_label, time_stamp, '.txt')
+    #make_annotation_file(save_path, day_label, audio_feats_data, time_stamp, species_prediction)
 #save_folder = Project_path + '/Data/'    
 #save_file_name = save_folder + 'birds_with_noise_100.pickle'
 #with open(save_file_name, 'wb') as opo:
