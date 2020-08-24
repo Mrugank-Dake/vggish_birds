@@ -27,7 +27,6 @@ for temp_file in audio_fs_temp:
   duration = frames / float(rate)
   #print(duration)
   if duration > 0.98:
-    print(duration)
     audio_fs.append(temp_file)
 
 # Setup the audioset analysis

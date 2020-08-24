@@ -59,8 +59,9 @@ def multi_class_classification(X, y, k_fold = 5):
     fini_train = 0
     cuce_train = 0
     phma_train = 0
-    pyjo_train = 0
+    gaso_train = 0
     poho_train = 0
+    hyga_train = 0
     noise_train = 0
     for i in y_train:
       if i == 'MOFA':
@@ -71,37 +72,43 @@ def multi_class_classification(X, y, k_fold = 5):
         cuce_train += 1
       elif i == 'PHMA':
         phma_train += 1
-      elif i == 'PYJO':
-        pyjo_train += 1
+      elif i == 'GASO':
+        gaso_train += 1
       elif i == 'POHO':
         poho_train += 1
-      elif i == 'Noise':
+      elif i == 'NOISE':
         noise_train += 1
+      elif i == 'HYGA':
+        hyga_train += 1
     
     mofa_test = 0
     fini_test = 0
     cuce_test = 0
     phma_test = 0
-    pyjo_test = 0
+    gaso_test = 0
     poho_test = 0
+    hyga_test = 0
     noise_test = 0
-    for j in y_test:
-      if j == 'MOFA':
+    for i in y_test:
+      if i == 'MOFA':
         mofa_test += 1
-      elif j == 'FINI':
+      elif i == 'FINI':
         fini_test += 1
-      elif j == 'CUCE':
+      elif i == 'CUCE':
         cuce_test += 1
-      elif j == 'PHMA':
+      elif i == 'PHMA':
         phma_test += 1
-      elif j == 'PYJO':
-        pyjo_test += 1
-      elif j == 'POHO':
+      elif i == 'GASO':
+        gaso_test += 1
+      elif i == 'POHO':
         poho_test += 1
-      elif j == 'Noise':
+      elif i == 'NOISE':
         noise_test += 1
-    print("mofa_train = {}, fini_train = {}, cuce_train = {}, phma_train = {}, pyjo_train = {}, poho_train = {}, noise_train = {}".format(mofa_train, fini_train, cuce_train, phma_train, pyjo_train, poho_train, noise_train))
-    print("mofa_test = {}, fini_test = {}, cuce_test = {}, phma_test = {}, pyjo_test = {}, poho_test = {}, noise_test = {}".format(mofa_test, fini_test, cuce_test, phma_test, pyjo_test, poho_test, noise_test))
+      elif i == 'HYGA':
+        hyga_test += 1
+
+    print("mofa_train = {}, fini_train = {}, cuce_train = {}, phma_train = {}, poho_train = {}, noise_train = {}, hyga_train = {}, gaso_train = {}".format(mofa_train, fini_train, cuce_train, phma_train, poho_train, noise_train, hyga_train, gaso_train))
+    print("mofa_test = {}, fini_test = {}, cuce_test = {}, phma_test = {}, poho_test = {}, noise_test = {}, hyga_test = {}, gaso_test{}".format(mofa_test, fini_test, cuce_test, phma_test, poho_test, noise_test, hyga_test, gaso_test))
     # training a classifier
     clf = RandomForestClassifier(random_state=0, n_estimators=100)
     clf.fit(X_train, y_train)
