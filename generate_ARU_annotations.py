@@ -5,12 +5,12 @@ import random
 from sklearn.ensemble import RandomForestClassifier
 from save_text import make_annotation_file
 
-days = ['02']
+days = ['02', '04']
 concatenated_pickle = []
 Project_path = input('Project path: ')
 
 # Load training data from pickle files
-path_here = os.path.join(Project_path, 'Data/birds_with_noise_100.pickle')
+path_here = os.path.join(Project_path, 'Data/birds_with_noise_single_notes_new.pickle')
 with open(path_here, 'rb') as savef:
   birds = pickle.load(savef)
 birds = np.transpose(np.array(birds))
@@ -30,7 +30,7 @@ for day in days:
   folder_name = Project_path + 'ARU_embeddings_no_overlap/' + day + '/'
   file_names = os.listdir(folder_name)
   print(['We are on day ' + day]) 
-  save_folder = Project_path + 'ARU_annotations_no_overlap/' + day + '/'
+  save_folder = Project_path + 'ARU_annotations_no_overlap_notes/' + day + '/'
   if not os.path.exists(save_folder):
     os.mkdir(save_folder)
   
@@ -40,13 +40,13 @@ for day in days:
     with open(os.path.join(folder_name, FILE), 'rb') as savef:
       wtf = pickle.load(savef)
     day_label, audio_feats_data, time_stamp = wtf['day'], wtf['raw_audioset_feats_960ms'], wtf['time_stamp']
-    average_size = 5
-    feat = np.zeros((audio_feats_data.shape[0] - average_size + 1, 128))
-    for feat_count in range(feat.shape[0]):
-      for size in range(average_size):
-        feat[feat_count] += audio_feats_data[feat_count + size]
-      feat[feat_count] = feat[feat_count] / average_size
-    species_prediction.append(clf.predict(feat))
+    #average_size = 5
+    #feat = np.zeros((audio_feats_data.shape[0] - average_size + 1, 128))
+    #for feat_count in range(feat.shape[0]):
+    #  for size in range(average_size):
+    #    feat[feat_count] += audio_feats_data[feat_count + size]
+    #  feat[feat_count] = feat[feat_count] / average_size
+    species_prediction.append(clf.predict(audio_feats_data))
     species_prediction = np.transpose(np.asarray(species_prediction))
     save_path = save_folder + time_stamp +  '.txt'
-    make_annotation_file(save_path, day_label, time_stamp, species_prediction, average_size)
+    make_annotation_file(save_path, day_label, time_stamp, species_prediction)
