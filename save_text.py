@@ -22,12 +22,12 @@ def make_annotation_file(save_path, day_label, time_stamp, species):
       elif species[row][0] == 'PHMA':
         low_freq = 3000
         high_freq = 7000
-      #elif species[row][0] == 'GASO':
-      #  low_freq = 
-      #  high_freq = 
-      #elif species[row][0] == 'HYGA':
-      #  low_freq = 
-      #  high_freq = 
+      elif species[row][0] == 'GASO':
+        low_freq = 500
+        high_freq = 2000
+      elif species[row][0] == 'HYGA':
+        low_freq = 2000
+        high_freq = 6500
       else:
         low_freq = 200
         high_freq = 8000
