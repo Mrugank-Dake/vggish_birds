@@ -5,8 +5,10 @@ import random
 import wave
 import contextlib
 from sklearn.ensemble import RandomForestClassifier
+from imblearn.over_sampling import SMOTE 
 from save_text import make_annotation_file, make_day_annotation_file
-
+from imblearn.under_sampling import RandomUnderSampler
+ 
 days = ['02', '04']
 Project_path = '/content/drive/My Drive/Sciurid Lab/CNN/VGGish_Birds/'
 #/input('Project path: ')
@@ -20,11 +22,44 @@ for i in range(audio_feats_data_training.shape[0]):
   toto = np.array(audio_feats_data_training[i], dtype = ('O')).astype(np.float)
   BIRDS_LIST.append(toto)
 BIRDS = np.array(BIRDS_LIST)
-#for count_train in range(len(species_trainin))
+sm = SMOTE(random_state = 2)
+#X_train, y_train = sm.fit_sample(BIRDS, species_training)
+
+rus = RandomUnderSampler(random_state=0)
+X_train, y_train = rus.fit_resample(BIRDS, species_training)
+
+
+fini_count = 0
+cuce_count = 0
+mofa_count = 0
+poho_count = 0
+phma_count = 0
+gaso_count = 0
+hyga_count = 0
+noise_count = 0
+for ioio in range(y_train.shape[0]):
+  if y_train[ioio] == 'FINI':
+    fini_count += 1
+  elif y_train[ioio] == 'CUCE':
+    cuce_count += 1
+  elif y_train[ioio] == 'MOFA':
+    mofa_count += 1
+  elif y_train[ioio] == 'POHO':
+    poho_count += 1
+  elif y_train[ioio] == 'PHMA':
+    phma_count += 1
+  elif y_train[ioio] == 'GASO':
+    gaso_count += 1
+  elif y_train[ioio] == 'HYGA':
+    hyga_count += 1
+  elif y_train[ioio] == 'NOISE':
+    noise_count += 1
+
+print('FINI = {}\n CUCE = {}\n MOFA = {}\n POHO = {}\n PHMA = {}\n GASO = {}\n HYGA = {}\n Noise = {}'.format(fini_count, cuce_count, mofa_count, poho_count, phma_count, gaso_count, hyga_count, noise_count))
 
 # Train classifier
 clf = RandomForestClassifier(random_state=0, n_estimators=100)
-clf.fit(BIRDS, species_training)
+clf.fit(X_train, y_train)
 
 # Load sound files for annotations
 for day in days:
@@ -32,7 +67,7 @@ for day in days:
   file_names = sorted(os.listdir(folder_name))
   print(['We are on day ' + day])
 
-  save_folder = Project_path + 'ARU_annotations_no_overlap_notes/'
+  save_folder = Project_path + 'ARU_annotations_no_overlap_undersample_notes/'
   day_fold = save_folder + day +'/'
   if not os.path.exists(day_fold):
     os.mkdir(day_fold)
