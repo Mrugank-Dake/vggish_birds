@@ -2,6 +2,8 @@ import pickle
 import numpy as np
 import os
 import random
+import wave
+import contextlib
 from sklearn.ensemble import RandomForestClassifier
 from save_text import make_annotation_file, make_day_annotation_file
 
@@ -33,8 +35,9 @@ for day in days:
   print(['We are on day ' + day])
 
   save_folder = Project_path + 'ARU_annotations_no_overlap_notes/'
-  if not os.path.exists(save_folder):
-    os.mkdir(save_folder)
+  day_fold = save_folder + day +'/'
+  if not os.path.exists(day_fold):
+    os.mkdir(day_fold)
   
   duration_files = [0]
   species_prediction_day = []
@@ -63,4 +66,4 @@ for day in days:
     duration += frames / float(rate)
     duration_files.append(duration)
   save_path_day = save_folder + '.txt'
-  make_day_annotation_file(save_path_day, species_prediction, duration_files)
+  #make_day_annotation_file(save_path_day, species_prediction, duration_files)
