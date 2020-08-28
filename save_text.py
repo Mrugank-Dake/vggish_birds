@@ -27,12 +27,23 @@ def make_day_annotation_file(save_path, species, num_preds_file, duration_files)
     file_length = duration_files[file_count]
     species_in_file = species[file_count, 0, :]
     column_count = species_in_file.shape[0]
-    for column in range(column_count):
+    column = 0
+    while column <= column_count:
+      print(column)
       species_name = species_in_file[column]
+      skip = True
+      skip_annotation_count = 1
+      while skip == True:
+        for skip_count in range(column + 1, column_count):
+          if species_in_file[column] ==  species_in_file[skip_count]:
+             skip_annotation_count += 1
+          else:
+            skip = False
+      column += skip_annotation_count
       if species_name != 'NOISE':
         annotation_count += 1
         begin_time = round(0.960 * column + file_length, 2)
-        end_time = round(begin_time + 0.960, 2)
+        end_time = round(begin_time + (skip_annotation_count + 1) * 0.960, 2)
         low_freq = low_freq_dict[species_name]
         high_freq = high_freq_dict[species_name]
         row_input = "{}\t Spectrogram 1\t 1\t {}\t {}\t {}\t {}\t {}\n".format(annotation_count, begin_time, end_time, low_freq, high_freq, species_name)

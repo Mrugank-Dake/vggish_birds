@@ -64,7 +64,7 @@ for day in days:
     num_preds += species_prediction.shape[0]
     num_preds_file.append(num_preds)
     save_path = save_folder + day + '/' + time_stamp +  '.txt'
-    make_annotation_file(save_path, species_prediction)
+    #make_annotation_file(save_path, species_prediction)
     with contextlib.closing(wave.open(wav_file_path,'r')) as f:
       frames = f.getnframes()
       rate = f.getframerate()
