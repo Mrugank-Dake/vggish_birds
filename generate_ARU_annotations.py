@@ -40,13 +40,16 @@ for day in days:
     os.mkdir(day_fold)
   
   duration_files = [0]
+  num_preds = 0
   species_prediction_day = []
+  num_preds_file = []
   duration = 0
   # Make annotations
   for FILE in file_names:
     species_prediction = []
-    file_path = os.path.join(folder_name, FILE)
-    with open(file_path, 'rb') as savef:
+    pickle_file_path = os.path.join(folder_name, FILE)
+    wav_file_path = os.path.join(Project_path, 'ARU_Test', day, FILE[:-7] + '.wav')
+    with open(pickle_file_path, 'rb') as savef:
       wtf = pickle.load(savef)
     day_label, audio_feats_data, time_stamp = wtf['day'], wtf['raw_audioset_feats_960ms'], wtf['time_stamp']
     #average_size = 5
@@ -56,14 +59,17 @@ for day in days:
     #    feat[feat_count] += audio_feats_data[feat_count + size]
     #  feat[feat_count] = feat[feat_count] / average_size
     species_prediction.append(clf.predict(audio_feats_data))
-    species_prediction_day.append(clf.predict(audio_feats_data))
+    species_prediction_day.append(np.asarray(species_prediction))
     species_prediction = np.transpose(np.asarray(species_prediction))
+    num_preds += species_prediction.shape[0]
+    num_preds_file.append(num_preds)
     save_path = save_folder + day + '/' + time_stamp +  '.txt'
     make_annotation_file(save_path, species_prediction)
-    with contextlib.closing(wave.open(file_path,'r')) as f:
+    with contextlib.closing(wave.open(wav_file_path,'r')) as f:
       frames = f.getnframes()
       rate = f.getframerate()
     duration += frames / float(rate)
     duration_files.append(duration)
-  save_path_day = save_folder + '.txt'
-  #make_day_annotation_file(save_path_day, species_prediction, duration_files)
+  species_prediction_day = np.asarray(species_prediction_day)
+  save_path_day = save_folder + day + '.txt'
+  make_day_annotation_file(save_path_day, species_prediction_day, num_preds_file, duration_files)
