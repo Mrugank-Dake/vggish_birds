@@ -3,7 +3,7 @@ import csv
 import numpy as np
 
 days = ['02', '04']
-RF_NAME = 'FINI'
+RF_NAME = 'FINI_SMOTE'
 project_path = '/content/drive/My Drive/Sciurid Lab/CNN/VGGish_Birds/New annotations/'
 species_path = os.path.join(project_path, RF_NAME)
 spec_dict = {'New fini': 'FINI', ' New fini': 'FINI', 'CUCE' : 'CUCE', ' CUCE' : 'CUCE', 'POHO' : 'POHO', ' POHO' : 'POHO', 'PHMA' : 'PHMA', ' PHMA' : 'PHMA', 'MOFA' : 'MOFA', ' MOFA' : 'MOFA', 'HYGA' : 'HYGA', ' HYGA' : 'HYGA', 'GASO' : 'GASO', ' GASO' : 'GASO'}
@@ -116,7 +116,8 @@ for omg in OMG_bored:
       F1[omg] = 100
 
 val_file_name = species_path + '/detection_validation.txt'
-text_file = open(val_file_name, 'w+')
+text_file = open(val_file_name, 'w')
 text_file.write("Species\t Annotations\t Detections\t TP\t FP\t FN\t Precison\t Recall\t F1\n")
 for popo in OMG_bored:
   text_file.write(popo+'\t'+str(total_annotations[popo])+'\t'+str(total_detections[popo])+'\t'+str(tp[popo])+'\t'+str(fp[popo])+'\t'+str(fn[popo])+'\t'+str(precision[popo])+'\t'+str(recall[popo])+'\t'+str(F1[popo])+'\n')
+text_file.close()
