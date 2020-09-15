@@ -3,7 +3,7 @@ import csv
 import numpy as np
 
 days = ['02', '04']
-RF_NAME = 'FINI_SMOTE'
+RF_NAME = 'regressor_80'
 project_path = '/content/drive/My Drive/Sciurid Lab/CNN/VGGish_Birds/New annotations/'
 species_path = os.path.join(project_path, RF_NAME)
 spec_dict = {'New fini': 'FINI', ' New fini': 'FINI', 'CUCE' : 'CUCE', ' CUCE' : 'CUCE', 'POHO' : 'POHO', ' POHO' : 'POHO', 'PHMA' : 'PHMA', ' PHMA' : 'PHMA', 'MOFA' : 'MOFA', ' MOFA' : 'MOFA', 'HYGA' : 'HYGA', ' HYGA' : 'HYGA', 'GASO' : 'GASO', ' GASO' : 'GASO'}
@@ -106,14 +106,15 @@ for day in days:
 
 for omg in OMG_bored:
   if total_annotations[omg] > 0:
-    fp[omg] = total_detections[omg] - tp[omg]
-    fn[omg] = total_annotations[omg] - tp[omg]
-    precision[omg] = round(tp[omg]/total_detections[omg], 4)
-    recall[omg] = round(tp[omg]/total_annotations[omg], 4)
-    if precision[omg] + recall[omg] > 0:
-      F1[omg] = round(2*precision[omg]*recall[omg] / (precision[omg] + recall[omg]), 4)
-    else:
-      F1[omg] = 100
+    if total_detections[omg] > 0:
+      fp[omg] = total_detections[omg] - tp[omg]
+      fn[omg] = total_annotations[omg] - tp[omg]
+      precision[omg] = round(tp[omg]/total_detections[omg], 4)
+      recall[omg] = round(tp[omg]/total_annotations[omg], 4)
+      if precision[omg] + recall[omg] > 0:
+        F1[omg] = round(2*precision[omg]*recall[omg] / (precision[omg] + recall[omg]), 4)
+      else:
+        F1[omg] = 100
 
 val_file_name = species_path + '/detection_validation.txt'
 text_file = open(val_file_name, 'w')
