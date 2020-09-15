@@ -1,5 +1,4 @@
-
-from analysis_libs_birds_with_noise import multi_class_classification
+from analysis_libs_birds_with_noise import multi_class_classification, random_forest_regressor
 from plot_libs_birds import plot_multi_class_recalls
 import matplotlib.pyplot as plt
 import matplotlib
@@ -18,6 +17,7 @@ feats = ['raw_audioset_feats_960ms']
 
 # How many training test splits - recommend 5
 k_folds = 10
+threshold = 0.5
 
 # Figure setup
 n_subplots_x = 1
@@ -40,13 +40,15 @@ for f in feats:
                 toto = np.array(audio_feats_data[i], dtype = ('O')).astype(np.float)
                 BIRDS_LIST.append(toto)
         BIRDS = np.array(BIRDS_LIST)
-        cm, cm_labs, average_acc, accuracies, cm_values = multi_class_classification(BIRDS, species, k_fold=k_folds)
+        #cm, cm_labs, average_acc, accuracies, cm_values = multi_class_classification(BIRDS, species, k_fold=k_folds)
+        cm, cm_labs, average_acc, accuracies, cm_values = random_forest_regressor(BIRDS, species, threshold, k_fold=k_folds)
+        
         plot_multi_class_recalls(accuracies, cm_labs, average_acc, cm_values, 'species', f)
         ax.set_title('Species classification')
         ax.set_xlabel("Bird species")
         ax.set_ylabel("F1 score")
 
-png_name = 'Classification with single notes new.png'
+png_name = 'Regressor with single notes new.png'
 save_path = os.path.join(Project_path, 'Figures', png_name)   
 fig.savefig(save_path)
 plt.show()
