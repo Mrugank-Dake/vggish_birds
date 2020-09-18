@@ -2,11 +2,11 @@ import os
 import csv
 import numpy as np
 
-days = ['02', '04']
-RF_NAME = 'regressor_80'
-project_path = '/content/drive/My Drive/Sciurid Lab/CNN/VGGish_Birds/New annotations/'
+days = ['02']
+RF_NAME = 'ARU_annotations_no_overlap_smote_notes'
+project_path = '/content/drive/My Drive/Sciurid Lab/CNN/VGGish_Birds/'
 species_path = os.path.join(project_path, RF_NAME)
-spec_dict = {'New fini': 'FINI', ' New fini': 'FINI', 'CUCE' : 'CUCE', ' CUCE' : 'CUCE', 'POHO' : 'POHO', ' POHO' : 'POHO', 'PHMA' : 'PHMA', ' PHMA' : 'PHMA', 'MOFA' : 'MOFA', ' MOFA' : 'MOFA', 'HYGA' : 'HYGA', ' HYGA' : 'HYGA', 'GASO' : 'GASO', ' GASO' : 'GASO'}
+spec_dict = {'FINI': 'FINI', ' FINI': 'FINI', 'CUCE' : 'CUCE', ' CUCE' : 'CUCE', 'POHO' : 'POHO', ' POHO' : 'POHO', 'PHMA' : 'PHMA', ' PHMA' : 'PHMA', 'MOFA' : 'MOFA', ' MOFA' : 'MOFA', 'HYGA' : 'HYGA', ' HYGA' : 'HYGA', 'GASO' : 'GASO', ' GASO' : 'GASO'}
 total_detections = {}
 total_annotations = {}
 tp = {}
@@ -53,7 +53,7 @@ for day in days:
 
   #*******************************************************************************#
   day_folder = day + '_Dec_2018'
-  annotation_folder = os.path.join(project_path, 'annotation_files', day_folder)
+  annotation_folder = os.path.join(project_path, 'New annotations/annotation_files', day_folder)
   rf_folder = os.path.join(species_path, day)
   annotation_files = os.listdir(annotation_folder)
   for annotation_file in annotation_files:
@@ -101,7 +101,6 @@ for day in days:
         etrn = end_time_rn[j]
         if (btan <= btrn <= etan and btan <= etrn <= etan) or (btan <= btrn <= etan or btan <= etrn <= etan):
           if species_an[i] == species_rn[j]:
-            #print(day)
             tp[species_rn[j]] +=1
 
 for omg in OMG_bored:
