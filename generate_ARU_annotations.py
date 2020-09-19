@@ -16,9 +16,9 @@ from imblearn.under_sampling import RandomUnderSampler
 days = ['02', '04']
 Project_path = '/content/drive/My Drive/Sciurid Lab/CNN/VGGish_Birds/'
 #/input('Project path: ')
-threshold = 0.5
+#threshold = 0.5
 # Load training data from pickle files
-path_here = os.path.join(Project_path, 'Data/birds_with_noise_single_notes_new_fini.pickle')
+path_here = os.path.join(Project_path, 'Data/birds_with_noise_single_notes_new.pickle')
 with open(path_here, 'rb') as savef:
   audio_feats_data_training, species_training, num_vecs = np.transpose(np.array(pickle.load(savef)))
 BIRDS_LIST = []
@@ -26,7 +26,7 @@ for i in range(audio_feats_data_training.shape[0]):
   toto = np.array(audio_feats_data_training[i], dtype = ('O')).astype(np.float)
   BIRDS_LIST.append(toto)
 BIRDS = np.array(BIRDS_LIST)
-print(np.unique(species_training))
+#print(np.unique(species_training))
 #sm = SMOTE(random_state = 2)
 #X_train, y_train = sm.fit_sample(BIRDS, species_training)
 
@@ -34,12 +34,12 @@ print(np.unique(species_training))
 #X_train, y_train = rus.fit_resample(BIRDS, species_training)
 
 # Train regressor
-species_training[species_training == 'NOISE'] = 'AAA'
-enc = OneHotEncoder(categories = 'auto', sparse = False, handle_unknown = 'error')
-y_train = enc.fit_transform(species_training.reshape(species_training.shape[0], 1))
+#species_training[species_training == 'NOISE'] = 'AAA'
+#enc = OneHotEncoder(categories = 'auto', sparse = False, handle_unknown = 'error')
+#y_train = enc.fit_transform(species_training.reshape(species_training.shape[0], 1))
   
-clf = RandomForestRegressor(random_state=0, n_estimators=100)
-clf.fit(BIRDS, y_train)
+clf = RandomForestClassifier(random_state=0, n_estimators=100)
+clf.fit(BIRDS, species_training)
 
 species = np.unique(species_training)
 train_res = {}
@@ -58,7 +58,7 @@ for day in days:
   file_names = sorted(os.listdir(folder_name))
   print(['We are on day ' + day])
 
-  save_folder = Project_path + 'New annotations/regressor_50/'
+  save_folder = Project_path + 'ARU_annotations_no_overlap_notes/'
   day_fold = save_folder + day +'/'
   if not os.path.exists(day_fold):
     os.mkdir(day_fold)
@@ -78,11 +78,12 @@ for day in days:
       wtf = pickle.load(savef)
     day_label, audio_feats_data, time_stamp = wtf['day'], wtf['raw_audioset_feats_960ms'], wtf['time_stamp']
     predictions = clf.predict(audio_feats_data)
-    predictions = Binarizer(threshold = threshold).fit_transform(predictions)
-    predictions_cat = enc.inverse_transform(predictions)
-    predictions_cat[predictions_cat == 'AAA'] = 'NOISE'
-    predictions_cat = predictions_cat.flatten()
-    species_prediction.append(predictions_cat)
+    #predictions = Binarizer(threshold = threshold).fit_transform(predictions)
+    #predictions_cat = enc.inverse_transform(predictions)
+    #predictions_cat[predictions_cat == 'AAA'] = 'NOISE'
+    #predictions_cat = predictions_cat.flatten()
+    #species_prediction.append(predictions_cat)
+    species_prediction.append(predictions)
     species_prediction_day.append(np.asarray(species_prediction))
     species_prediction = np.transpose(np.asarray(species_prediction))
     #species_prediction[species_prediction == 'AAA'] = 'NOISE'
