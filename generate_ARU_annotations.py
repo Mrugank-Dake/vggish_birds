@@ -67,7 +67,6 @@ for day in days:
   for FILE in file_names:
     species_prediction = []
     pickle_file_path = os.path.join(folder_name, FILE)
-    wav_file_path = os.path.join(Project_path, 'ARU_Test', day, FILE[:-7] + '.wav')
     with open(pickle_file_path, 'rb') as savef:
       wtf = pickle.load(savef)
     day_label, audio_feats_data, time_stamp = wtf['day'], wtf['raw_audioset_feats_960ms'], wtf['time_stamp']
@@ -78,7 +77,6 @@ for day in days:
     #predictions_cat = predictions_cat.flatten()
     #species_prediction.append(predictions_cat)
     species_prediction.append(predictions)
-
     
     species_prediction = np.transpose(np.asarray(species_prediction))
     species_prediction_day.append(np.asarray(species_prediction))
@@ -87,11 +85,14 @@ for day in days:
     num_preds_file.append(num_preds)
     save_path = save_folder + day + '/' + time_stamp +  '.txt'
     make_annotation_file(save_path, species_prediction)
+    
+    wav_file_path = os.path.join(Project_path, 'ARU_Test', day, FILE[:-7] + '.wav')
     with contextlib.closing(wave.open(wav_file_path,'r')) as f:
       frames = f.getnframes()
       rate = f.getframerate()
     duration += frames / float(rate)
     duration_files.append(duration)
+  
   species_prediction_day = np.asarray(species_prediction_day)
   #species_prediction_day[species_prediction_day == 'AAA'] = 'NOISE'
   #print(species_prediction_day[0, 0, :])
