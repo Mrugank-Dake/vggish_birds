@@ -3,9 +3,10 @@ import numpy as np
 import os
 import random
 
-species = ['CUCE', 'FINI', 'GASO', 'HYGA', 'MOFA', 'NOISE', 'PHMA', 'POHO']
+species = ['CUCE', 'FINI', 'MOFA', 'NOISE', 'PHMA', 'POHO']
 concatenated_pickle = []
-Project_path = input('Project path: ')
+#Project_path = input('Project path: ')
+Project_path = '/content/drive/My Drive/Sciurid Lab/CNN/VGGish_Birds/'
 for spp in species:
   folder_name = Project_path + 'bird_notes_embeddings/' + spp + '/'
   file_names = os.listdir(folder_name)
@@ -23,6 +24,6 @@ for spp in species:
       concatenated_pickle.append([audio_feats_data[row], sp_name, num_vecs])
     
 save_folder = Project_path + '/Data/'    
-save_file_name = save_folder + 'birds_with_noise_single_notes_new.pickle'
+save_file_name = save_folder + 'CFMNPP.pickle'
 with open(save_file_name, 'wb') as opo:
   pickle.dump(concatenated_pickle, opo)
