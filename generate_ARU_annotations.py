@@ -12,13 +12,14 @@ from sklearn.preprocessing import Binarizer
 from imblearn.over_sampling import SMOTE 
 from save_text import make_annotation_file, make_day_annotation_file
 from imblearn.under_sampling import RandomUnderSampler
- 
+from analysis_libs_funambulus_with_noise import rf_classifier_aru
+
 days = ['02', '04']
 Project_path = '/content/drive/My Drive/Sciurid Lab/CNN/VGGish_Birds/'
-#/input('Project path: ')
-#threshold = 0.5
+threshold = 0.5
+noise_value = 1100
 # Load training data from pickle files
-path_here = os.path.join(Project_path, 'Data/birds_with_noise_single_notes_new.pickle')
+path_here = os.path.join(Project_path, 'Data/CFMNPP.pickle')
 with open(path_here, 'rb') as savef:
   audio_feats_data_training, species_training, num_vecs = np.transpose(np.array(pickle.load(savef)))
 BIRDS_LIST = []
@@ -26,7 +27,10 @@ for i in range(audio_feats_data_training.shape[0]):
   toto = np.array(audio_feats_data_training[i], dtype = ('O')).astype(np.float)
   BIRDS_LIST.append(toto)
 BIRDS = np.array(BIRDS_LIST)
-#print(np.unique(species_training))
+UNIQUE_BIRDS = np.unique(species_training)
+print(np.unique(species_training))
+
+clf = rf_classifier_aru(BIRDS, species_training, noise_value, UNIQUE_BIRDS)
 #sm = SMOTE(random_state = 2)
 #X_train, y_train = sm.fit_sample(BIRDS, species_training)
 
@@ -38,27 +42,17 @@ BIRDS = np.array(BIRDS_LIST)
 #enc = OneHotEncoder(categories = 'auto', sparse = False, handle_unknown = 'error')
 #y_train = enc.fit_transform(species_training.reshape(species_training.shape[0], 1))
   
-clf = RandomForestClassifier(random_state=0, n_estimators=100)
-clf.fit(BIRDS, species_training)
-
-species = np.unique(species_training)
-train_res = {}
-for sp in species:
-  train_res[sp] = 0
-  
-for i in species_training:
-  train_res[i] += 1
-
-print("Training set = {}".format(train_res))
+#clf = RandomForestClassifier(random_state=0, n_estimators=100)
+#clf.fit(BIRDS, species_training)
 
 
 # Load sound files for annotations
 for day in days:
-  folder_name = Project_path + 'ARU_embeddings_no_overlap/' + day + '/'
+  folder_name = Project_path + 'ARU_embeddings/90_overlap/' + day + '/'
   file_names = sorted(os.listdir(folder_name))
   print(['We are on day ' + day])
 
-  save_folder = Project_path + 'ARU_annotations_no_overlap_notes/'
+  save_folder = Project_path + 'New annotations/CFMNPP_classifier/'
   day_fold = save_folder + day +'/'
   if not os.path.exists(day_fold):
     os.mkdir(day_fold)
@@ -84,8 +78,10 @@ for day in days:
     #predictions_cat = predictions_cat.flatten()
     #species_prediction.append(predictions_cat)
     species_prediction.append(predictions)
-    species_prediction_day.append(np.asarray(species_prediction))
+
+    
     species_prediction = np.transpose(np.asarray(species_prediction))
+    species_prediction_day.append(np.asarray(species_prediction))
     #species_prediction[species_prediction == 'AAA'] = 'NOISE'
     num_preds += species_prediction.shape[0]
     num_preds_file.append(num_preds)
