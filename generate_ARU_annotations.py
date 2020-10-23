@@ -12,14 +12,14 @@ from sklearn.preprocessing import Binarizer
 from imblearn.over_sampling import SMOTE 
 from save_text import make_annotation_file, make_day_annotation_file
 from imblearn.under_sampling import RandomUnderSampler
-from analysis_libs_birds_with_noise import rf_classifier_aru
+from analysis_libs_birds_with_noise import rf_classifier_aru, rf_classifier_aru_simple
 
 days = ['02', '04']
 Project_path = '/content/drive/My Drive/Sciurid Lab/CNN/VGGish_Birds/'
 threshold = 0.5
-noise_value = 1114
+noise_value = 3000
 # Load training data from pickle files
-path_here = os.path.join(Project_path, 'Data/October.pickle')
+path_here = os.path.join(Project_path, 'Data/october.pickle')
 with open(path_here, 'rb') as savef:
   audio_feats_data_training, species_training, num_vecs = np.transpose(np.array(pickle.load(savef)))
 BIRDS_LIST = []
@@ -52,7 +52,7 @@ for day in days:
   file_names = sorted(os.listdir(folder_name))
   print(['We are on day ' + day])
 
-  save_folder = Project_path + 'ARU_oct_annotations/no_overlap_classifier/'
+  save_folder = Project_path + 'ARU_oct_annotations/' + str(noise_value) + 'noise_500trees_classifier/'
   day_fold = save_folder + day +'/'
   if not os.path.exists(day_fold):
     os.mkdir(day_fold)

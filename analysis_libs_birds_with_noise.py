@@ -215,6 +215,22 @@ def rf_classifier_aru(X, y, value):
   for i in y_train:
     train_res[i] += 1
   print("Training set = {}".format(train_res))
-  clf = RandomForestClassifier(random_state=0, n_estimators=200)#, max_features = 100)
+  clf = RandomForestClassifier(random_state=0, n_estimators=100)#, max_features = 100)
+  clf.fit(X_train, y_train)
+  return clf
+
+def rf_classifier_aru_simple(X, y):
+  X_train = np.asarray(X)
+  y_train = np.asarray(y)
+  species = np.unique(y)
+  
+  train_res = {}
+  for sp in species:
+    train_res[sp] = 0
+  
+  for i in y_train:
+    train_res[i] += 1
+  print("Training set = {}".format(train_res))
+  clf = RandomForestClassifier(random_state=0, n_estimators=500)#, max_features = 100)
   clf.fit(X_train, y_train)
   return clf
