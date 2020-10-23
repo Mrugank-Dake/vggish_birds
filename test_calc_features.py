@@ -1,3 +1,4 @@
+
 '''
 # See https://github.com/sarabsethi/audioset_soundscape_feats_sethi2019/tree/master/calc_audioset_feats for installation instructions
 '''
@@ -13,8 +14,8 @@ import contextlib
 species = input('Species name: ')
 #Project_path = input('Project path: ')
 Project_path = '/content/drive/My Drive/Sciurid Lab/CNN/VGGish_Birds/'
-audio_dir = Project_path + 'bird_notes/' + species + '/'
-spec_dir = os.path.join(Project_path, 'bird_notes_embeddings', species)
+audio_dir = Project_path + 'bird_notes/New species/' + species + '/'
+spec_dir = os.path.join(Project_path, 'bird_notes_oct_embeddings', species)
 if not os.path.exists(spec_dir):
   os.mkdir(spec_dir)
 all_fs = os.listdir(audio_dir)

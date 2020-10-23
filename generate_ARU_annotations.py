@@ -14,12 +14,12 @@ from save_text import make_annotation_file, make_day_annotation_file
 from imblearn.under_sampling import RandomUnderSampler
 from analysis_libs_birds_with_noise import rf_classifier_aru
 
-days = ['02']#, '04']
+days = ['02', '04']
 Project_path = '/content/drive/My Drive/Sciurid Lab/CNN/VGGish_Birds/'
 threshold = 0.5
 noise_value = 1114
 # Load training data from pickle files
-path_here = os.path.join(Project_path, 'Data/CFMNPP.pickle')
+path_here = os.path.join(Project_path, 'Data/October.pickle')
 with open(path_here, 'rb') as savef:
   audio_feats_data_training, species_training, num_vecs = np.transpose(np.array(pickle.load(savef)))
 BIRDS_LIST = []
@@ -48,11 +48,11 @@ clf = rf_classifier_aru(BIRDS, species_training, noise_value)
 
 # Load sound files for annotations
 for day in days:
-  folder_name = Project_path + 'ARU_embeddings/90_overlap/' + day + '/'
+  folder_name = Project_path + 'ARU_embeddings/no_overlap/' + day + '/'
   file_names = sorted(os.listdir(folder_name))
   print(['We are on day ' + day])
 
-  save_folder = Project_path + 'New annotations/CFMNPP_classifier/'
+  save_folder = Project_path + 'ARU_oct_annotations/no_overlap_classifier/'
   day_fold = save_folder + day +'/'
   if not os.path.exists(day_fold):
     os.mkdir(day_fold)
@@ -70,32 +70,33 @@ for day in days:
     with open(pickle_file_path, 'rb') as savef:
       wtf = pickle.load(savef)
     day_label, audio_feats_data, time_stamp = wtf['day'], wtf['raw_audioset_feats_960ms'], wtf['time_stamp']
-    overlap_predictions = clf.predict(audio_feats_data)
+    predictions = clf.predict(audio_feats_data)
+    #overlap_predictions = clf.predict(audio_feats_data)
     #predictions = Binarizer(threshold = threshold).fit_transform(predictions)
     #predictions_cat = enc.inverse_transform(predictions)
     #predictions_cat[predictions_cat == 'AAA'] = 'NOISE'
     #predictions_cat = predictions_cat.flatten()
     #species_prediction.append(predictions_cat)
-    predictions = []
-    for i in range(overlap_predictions.shape[0]):
-     if i >= 10:
-       spec_detected_array = []
-       for j in range(i - 9, i + 1):
-         spec_detected_array.append(overlap_predictions[j])
-       spec_detected = np.unique(np.asarray(spec_detected_array))
-       if spec_detected.shape[0] == 1:
-         predictions.append(spec_detected[0])
-       else:
-         predictions.append('NOISE')
-     else:
-       spec_detected_array = []
-       for j in range(0, i + 1):
-         spec_detected_array.append(overlap_predictions[j])
-       spec_detected = np.unique(np.asarray(spec_detected_array))
-       if spec_detected.shape[0] == 1:
-         predictions.append(spec_detected[0])
-       else:
-         predictions.append('NOISE') 
+    #predictions = []
+    #for i in range(overlap_predictions.shape[0]):
+    # if i >= 10:
+    #   spec_detected_array = []
+    #   for j in range(i - 9, i + 1):
+    #     spec_detected_array.append(overlap_predictions[j])
+    #   spec_detected = np.unique(np.asarray(spec_detected_array))
+    #   if spec_detected.shape[0] == 1:
+    #     predictions.append(spec_detected[0])
+    #   else:
+    #     predictions.append('NOISE')
+    # else:
+    #   spec_detected_array = []
+    #   for j in range(0, i + 1):
+    #     spec_detected_array.append(overlap_predictions[j])
+    #   spec_detected = np.unique(np.asarray(spec_detected_array))
+    #   if spec_detected.shape[0] == 1:
+    #     predictions.append(spec_detected[0])
+    #   else:
+    #     predictions.append('NOISE') 
     predictions = np.asarray(predictions)
     #print(predictions.shape)
     species_prediction.append(predictions)
