@@ -2,12 +2,12 @@ import os
 import csv
 import numpy as np
 
-days = ['02', '04']
+days = ['02']#, '04']
 #RF_NAME = 'FINI'
 project_path = '/content/drive/My Drive/Sciurid Lab/CNN/VGGish_Birds/ARU_oct_annotations/'
 classifier_type = '3000noise_500trees_classifier'
 #species_path = os.path.join(project_path, RF_NAME)
-spec_dict = {'FINI': 'FINI', ' FINI': 'FINI', 'CUCE' : 'CUCE', ' CUCE' : 'CUCE', 'POHO' : 'POHO', ' POHO' : 'POHO', 'PHMA' : 'PHMA', ' PHMA' : 'PHMA', 'MOFA' : 'MOFA', ' MOFA' : 'MOFA', 'GASO' : 'GASO', ' GASO' : 'GASO', 'PYJO': 'PYJO', ' PYJO': 'PYJO'}
+spec_dict = {'FINI': 'FINI', '': 'NS', ' ': 'NS', 'NS': 'NS', ' FINI': 'FINI', 'CUCE' : 'CUCE', ' CUCE' : 'CUCE', 'POHO' : 'POHO', ' POHO' : 'POHO', 'PHMA' : 'PHMA', ' PHMA' : 'PHMA', 'MOFA' : 'MOFA', ' MOFA' : 'MOFA', 'GASO' : 'GASO', ' GASO' : 'GASO', 'PYJO': 'PYJO', ' PYJO': 'PYJO'}
 total_detections = {}
 total_annotations = {}
 tp = {}
@@ -16,7 +16,7 @@ fn = {}
 precision = {}
 recall = {}
 F1 = {}
-OMG_bored = ['CUCE', 'FINI', 'POHO', 'PHMA', 'GASO', 'MOFA', 'PYJO']
+OMG_bored = ['CUCE', 'FINI', 'POHO', 'PHMA', 'GASO', 'MOFA', 'PYJO', 'NS']
 for OMG in OMG_bored:
   tp[OMG] = 0
   total_detections[OMG] = 0
@@ -33,7 +33,7 @@ for day in days:
   detection_folder = os.path.join(project_path, classifier_type, day)
   annotation_folder = os.path.join(project_path, 'annotations', day)
   detection_files = sorted(os.listdir(detection_folder))
-  time_array = np.arange(0, 30, 0.0960)
+  time_array = np.arange(0, 300, 0.960)
   for detection_file in detection_files:
     detection_file_path = os.path.join(detection_folder, detection_file)
     with open(detection_file_path, 'r') as dn:
@@ -57,7 +57,7 @@ for day in days:
       end_time_an = np.asarray([float(tm1p) for tm1p in end_time_an])
       with open(annotation_file_path, 'r') as an:
         species_an = np.asarray([row_an2[7] for row_an2 in csv.reader(an, delimiter = '\t')])[1:]
-      species_an = np.asarray([sp.upper() for sp in species_an])
+      species_an = np.asarray([spec_dict[sp.upper()] for sp in species_an])
       print(np.unique(species_an))
       for t in time_array:
         i_array = begin_time_dn[(begin_time_dn >= t - 0.0001) * (begin_time_dn <= t + 0.0001)]
@@ -115,7 +115,11 @@ for day in days:
       for sp in species_dn:
         fp[sp] += 1      
 for omg in OMG_bored:
-  precision[omg] = round(tp[omg]/(tp[omg] + fp[omg]), 4)
+  prec_den = tp[omg] + fp[omg]
+  if prec_den == 0:
+    precision[omg] = 100
+  else:
+    precision[omg] = round(tp[omg]/(tp[omg] + fp[omg]), 4)
   recall[omg] = round(tp[omg]/(tp[omg] + fn[omg]), 4)
   #F1[omg] = round(2*precision[omg]*recall[omg] / (precision[omg] + recall[omg]), 4)
   if precision[omg] + recall[omg] > 0:
