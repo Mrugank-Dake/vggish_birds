@@ -58,55 +58,70 @@ for day in days:
       with open(annotation_file_path, 'r') as an:
         species_an = np.asarray([row_an2[7] for row_an2 in csv.reader(an, delimiter = '\t')])[1:]
       species_an = np.asarray([sp.upper() for sp in species_an])
-      
+      print(np.unique(species_an))
       for t in time_array:
-        if t in begin_time_dn:
-          i = np.where(begin_time_dn == t)[0][0]
-          print(i)
+        i_array = begin_time_dn[(begin_time_dn >= t - 0.0001) * (begin_time_dn <= t + 0.0001)]
+        if len(i_array) != 0:
+          i = np.where(begin_time_dn == i_array[0])[0][0]
+          btdn = begin_time_dn[i]
+          etdn = end_time_dn[i]
           done = 0
           check = False
           while check == False:
             for j in range(begin_time_an.shape[0]):
               btan = begin_time_an[j]
               etan = end_time_an[j]
-              if (t <= btan <= t+0.096) or (t <= etan <= t+0.096) or (btan <= t and etan >= t+0.096):                
+              if (btdn < btan < etdn) or (btdn < etan < etdn) or (btan <= btdn and etan >= etdn):                
                 if species_dn[i] == species_an[j]:
                   done += 1
                   tp[species_dn[i]] += 1
+                  begin_time_dn = np.delete(begin_time_dn, i)
+                  end_time_dn = np.delete(end_time_dn, i)
+                  species_dn = np.delete(species_dn, i)
                   check = True
-                else:
-                  done += 1
-                  fp[species_dn[i]] += 1
-                  fn[species_an[j]] += 1
-                  check = True
-            check = True
-          if done == 0:
-            print('Checkpoint 4')
-            #print(species_dn[i])
-            fp[species_dn[i]] += 1
+              check = True
         else:
           check = False
           while check == False:
             for j in range(begin_time_an.shape[0]):
               btan = begin_time_an[j]
               etan = end_time_an[j]
-              if (t <= btan <= t+0.096) or (t <= etan <= t+0.096) or (btan <= t and etan >= t+0.096):
-                print(species_an[j])
+              if (t < btan < t+0.096) or (t < etan < t+0.096) or (btan <= t and etan >= t+0.096):
                 fn[species_an[j]] += 1
                 check = True
             check = True
+      for t in time_array:
+        i_array = begin_time_dn[(begin_time_dn >= t - 0.0001) * (begin_time_dn <= t + 0.0001)]
+        if len(i_array) != 0:
+          i = np.where(begin_time_dn == i_array[0])[0][0]
+          btdn = begin_time_dn[i]
+          etdn = end_time_dn[i]
+          done = 0
+          check = False
+          while check == False:
+            for j in range(begin_time_an.shape[0]):
+              btan = begin_time_an[j]
+              etan = end_time_an[j]
+              if (btdn < btan < etdn) or (btdn < etan < etdn) or (btan <= btdn and etan >= etdn):                
+                if species_dn[i] != species_an[j]:
+                  done += 1
+                  fp[species_dn[i]] += 1
+                  fn[species_an[j]] += 1
+                  check = True
+              check = True
+            if done == 0:
+              fp[species_dn[i]] += 1
     else:
       for sp in species_dn:
         fp[sp] += 1      
-print('Checkpoint 6')
 for omg in OMG_bored:
   precision[omg] = round(tp[omg]/(tp[omg] + fp[omg]), 4)
   recall[omg] = round(tp[omg]/(tp[omg] + fn[omg]), 4)
-  F1[omg] = round(2*precision[omg]*recall[omg] / (precision[omg] + recall[omg]), 4)
-#      if precision[omg] + recall[omg] > 0:
-#        F1[omg] = round(2*precision[omg]*recall[omg] / (precision[omg] + recall[omg]), 4)
-#      else:
-#        F1[omg] = 100
+  #F1[omg] = round(2*precision[omg]*recall[omg] / (precision[omg] + recall[omg]), 4)
+  if precision[omg] + recall[omg] > 0:
+    F1[omg] = round(2*precision[omg]*recall[omg] / (precision[omg] + recall[omg]), 4)
+  else:
+    F1[omg] = 100
 
 val_file_name = project_path + 'detector_validation/' + classifier_type + '.txt'
 text_file = open(val_file_name, 'w')
