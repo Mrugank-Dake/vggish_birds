@@ -12,7 +12,7 @@ import pickle
 Project_path = '/content/drive/My Drive/Sciurid Lab/CNN/VGGish_Birds/'
 Folder_name = input('02 or 04: ')
 audio_dir = Project_path + 'ARU_Test/' + Folder_name +'/'
-spec_dir = os.path.join(Project_path, 'ARU_embeddings/90_overlap', Folder_name)
+spec_dir = os.path.join(Project_path, 'ARU_embeddings/no_overlap', Folder_name)
 if not os.path.exists(spec_dir):
   os.mkdir(spec_dir)
 all_fs = os.listdir(audio_dir)
@@ -31,23 +31,3 @@ for f in audio_fs:
     file_name_f = spec_dir + '/' + f[:-4] + '.pickle'
     with open(file_name_f, 'wb') as opo:
         pickle.dump(results, opo)
-
-import smtplib
-
-server = smtplib.SMTP('smtp.gmail.com', 587)
-server.starttls()
-server.login("mrugankdake@gmail.com", "MRUGank19@")
-message = """From: From Person <from@fromdomain.com>
-To: To Person <to@todomain.com>
-Subject: SMTP e-mail test
-
-This is a test e-mail message.
-"""
-msg = """ From: Mrugank Colab <mrugank@gmail.com>
-To: Mrugank Colab <mrugank@gmail.com>
-Subject: SMTP e-mail test
-
-Hi Mrugank, Mrugank here. ARU embeddings are ready."""
-
-server.sendmail("mrugankdake@gmail.com", "mrugankdake@gmail.com", msg)
-server.quit()

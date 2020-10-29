@@ -1,11 +1,11 @@
 import os
 import csv
 import numpy as np
-
-days = ['02']#, '04']
+#for classifier_type in array:
+days = ['02', '04']
 #RF_NAME = 'FINI'
 project_path = '/content/drive/My Drive/Sciurid Lab/CNN/VGGish_Birds/ARU_oct_annotations/'
-classifier_type = '3000noise_500trees_classifier'
+classifier_type = '2000noise_500trees_classifier'
 #species_path = os.path.join(project_path, RF_NAME)
 spec_dict = {'FINI': 'FINI', '': 'NS', ' ': 'NS', 'NS': 'NS', ' FINI': 'FINI', 'CUCE' : 'CUCE', ' CUCE' : 'CUCE', 'POHO' : 'POHO', ' POHO' : 'POHO', 'PHMA' : 'PHMA', ' PHMA' : 'PHMA', 'MOFA' : 'MOFA', ' MOFA' : 'MOFA', 'GASO' : 'GASO', ' GASO' : 'GASO', 'PYJO': 'PYJO', ' PYJO': 'PYJO'}
 total_detections = {}
@@ -56,13 +56,19 @@ for day in days:
         end_time_an = np.asarray([row_an1[4] for row_an1 in csv.reader(an, delimiter = '\t')])[1:]
       end_time_an = np.asarray([float(tm1p) for tm1p in end_time_an])
       with open(annotation_file_path, 'r') as an:
-        species_an = np.asarray([row_an2[7] for row_an2 in csv.reader(an, delimiter = '\t')])[1:]
+        if day == '30':
+          species_an = np.asarray([row_an2[8] for row_an2 in csv.reader(an, delimiter = '\t')])[1:]
+        else:
+          species_an = np.asarray([row_an2[7] for row_an2 in csv.reader(an, delimiter = '\t')])[1:]
       species_an = np.asarray([spec_dict[sp.upper()] for sp in species_an])
+      #print(species_dn.shape, begin_time_dn.shape)
       print(np.unique(species_an))
       for t in time_array:
         i_array = begin_time_dn[(begin_time_dn >= t - 0.0001) * (begin_time_dn <= t + 0.0001)]
         if len(i_array) != 0:
+          print(species_dn.shape, begin_time_dn.shape)
           i = np.where(begin_time_dn == i_array[0])[0][0]
+          print(i)
           btdn = begin_time_dn[i]
           etdn = end_time_dn[i]
           done = 0
@@ -71,15 +77,18 @@ for day in days:
             for j in range(begin_time_an.shape[0]):
               btan = begin_time_an[j]
               etan = end_time_an[j]
-              if (btdn < btan < etdn) or (btdn < etan < etdn) or (btan <= btdn and etan >= etdn):                
-                if species_dn[i] == species_an[j]:
-                  done += 1
-                  tp[species_dn[i]] += 1
-                  begin_time_dn = np.delete(begin_time_dn, i)
-                  end_time_dn = np.delete(end_time_dn, i)
-                  species_dn = np.delete(species_dn, i)
-                  check = True
-              check = True
+              if ((btdn < btan < etdn) or (btdn < etan < etdn) or (btan <= btdn and etan >= etdn)) and (species_dn[i] == species_an[j]):
+                print("i = {}".format(i))                
+                #if species_dn[i] == species_an[j]:
+                #  print("tp = {}".format(i))
+                done += 1
+                tp[species_dn[i]] += 1
+                begin_time_dn = np.delete(begin_time_dn, i)
+                end_time_dn = np.delete(end_time_dn, i)
+                species_dn = np.delete(species_dn, i)
+                break
+            break
+          
         else:
           check = False
           while check == False:
@@ -102,12 +111,11 @@ for day in days:
             for j in range(begin_time_an.shape[0]):
               btan = begin_time_an[j]
               etan = end_time_an[j]
-              if (btdn < btan < etdn) or (btdn < etan < etdn) or (btan <= btdn and etan >= etdn):                
-                if species_dn[i] != species_an[j]:
-                  done += 1
-                  fp[species_dn[i]] += 1
-                  fn[species_an[j]] += 1
-                  check = True
+              if ((btdn < btan < etdn) or (btdn < etan < etdn) or (btan <= btdn and etan >= etdn)) and (species_dn[i] != species_an[j]):                
+                done += 1
+                fp[species_dn[i]] += 1
+                fn[species_an[j]] += 1
+                check = True
               check = True
             if done == 0:
               fp[species_dn[i]] += 1
